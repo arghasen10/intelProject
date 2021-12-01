@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import csv
+import numpy as np
 plt.rcParams.update({'font.size': 18})
 plt.rcParams["figure.figsize"] = (11,7)
 plt.rcParams["font.weight"] = "bold"
@@ -8,8 +9,8 @@ plt.rcParams["axes.labelweight"] = "bold"
 plt.grid(alpha=0.2)
 plt.tight_layout()
 
-time_arr = []
-energy_arr = []
+time_arr = [0]
+energy_arr = [0]
 with open('energyfile1.csv', 'r') as csv_file:
     lines = csv.reader(csv_file)
     for line in lines:
@@ -21,8 +22,8 @@ with open('energyfile1.csv', 'r') as csv_file:
 # plt.plot(time_arr, energy_arr, label='EnB1')
 # plt.show()
 
-time_arr2 = []
-energy_arr2 = []
+time_arr2 = [0]
+energy_arr2 = [0]
 with open('energyfile2.csv', 'r') as csv_file:
     lines = csv.reader(csv_file)
     for line in lines:
@@ -64,6 +65,7 @@ for t, e in zip(time_arr, energy_arr):
 init_t = 0
 sum_e = 0
 energy_s2 = []
+
 for t, e in zip(time_arr2, energy_arr2):
     sum_e += e
     if t > init_t+1:
@@ -71,8 +73,31 @@ for t, e in zip(time_arr2, energy_arr2):
         energy_s2.append(sum_e)
         sum_e = 0
 
+hand = []
+hand1 = []
+hand2 = []
+with open('UeHandoverStartStats.txt', 'r') as file:
+    lines = file.readlines()
+    for line in lines:
+        line = line.split()
+        hand.append(float(line[0]))
+
+flag = 0
+for e in hand:
+    if flag == 0:
+        hand1.append(e)
+        flag = 1
+    else:
+        hand2.append(e)
+        flag = 0
+
+plt.scatter(0, 0, marker='^', color='tab:blue')
+plt.scatter(8,0, marker='^', color='tab:orange')
+
 plt.plot(energy_s, label='eNb1')
 plt.plot(energy_s2, label='eNb2')
+# plt.scatter(hand1, red_star, marker='^', label='eNb2 to eNb1')
+# plt.scatter(hand2, blue_star, marker='o', label='eNb1 to eNb2')
 plt.ylabel('Energy Consumption(J/s)')
 plt.xlabel('Time(s)')
 plt.legend()
